@@ -37,7 +37,7 @@
     {
         "question": "What is 16 - 8?",
         "options": ["6", "7", "8", "9"],
-        "correctAnswer": 3
+        "correctAnswer": 2
     },
     {
         "question": "What is 14 - 5?",
