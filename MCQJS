@@ -1,0 +1,184 @@
+    // Define global variables 
+    const chapterLinks = { 
+  '1': 'https://raw.githubusercontent.com/riponsarkar21/MCQJSON/main/MCQJSON1', 
+  '2': 'https://raw.githubusercontent.com/riponsarkar21/MCQJSON/main/MCQJSON2', 
+  '3': 'https://raw.githubusercontent.com/riponsarkar21/MCQJSON/main/MCQJSON3', 
+  '4': 'https://raw.githubusercontent.com/riponsarkar21/MCQJSON/main/MCQJSON4', 
+  '5': 'https://raw.githubusercontent.com/riponsarkar21/MCQJSON/main/MCQJSON5' 
+}; 
+    const startButton = document.getElementById('start-button'); 
+    const questionContainer = document.getElementById('question-container'); 
+    const prevButton = document.getElementById('prev-button'); 
+    const nextButton = document.getElementById('next-button'); 
+    const submitButton = document.getElementById('submit-button'); 
+    const resultContainer = document.getElementById('result-container'); 
+    let currentQuestionIndex = 0; 
+    let selectedAnswers = {}; 
+    let testQuestions = []; // Store the shuffled questions for the current test 
+    // Start button click handler 
+    startButton.addEventListener('click', () => { 
+      const chapterSelect = document.querySelectorAll('#chapter-select input[type="checkbox"]:checked'); 
+      const selectedChapters = Array.from(chapterSelect).map(checkbox => checkbox.value); 
+      const jsonLinks = selectedChapters.map(chapter => chapterLinks[chapter]); 
+      const questionsPromises = jsonLinks.map(jsonLink => fetch(jsonLink).then(response => response.json())); 
+  Promise.all(questionsPromises) 
+    .then(data => { 
+      const originalQuestions = data.flat(); 
+      const totalQuestionsPerTest = 3; // Set the number of questions per test 
+      const shuffledQuestions = shuffleArray(originalQuestions); // Shuffle the questions 
+      testQuestions = shuffledQuestions.slice(0, totalQuestionsPerTest); 
+    // Display initial question 
+    displayQuestion(currentQuestionIndex, testQuestions); 
+            // Show quiz elements 
+            startButton.style.display = 'none'; 
+            questionContainer.style.display = 'block'; 
+            prevButton.style.display = 'inline-block'; 
+            nextButton.style.display = 'inline-block'; 
+            submitButton.style.display = 'inline-block'; 
+          }); 
+      /* .catch(error => console.error(error)); */ 
+      }); 
+    // Function to shuffle an array 
+    function shuffleArray(array) { 
+      const shuffled = [...array]; 
+      for (let i = shuffled.length - 1; i > 0; i--) { 
+        const j = Math.floor(Math.random() * (i + 1)); 
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; 
+      } 
+      return shuffled; 
+    } 
+    // Function to display a question 
+    function displayQuestion(index, questions) { 
+      const question = questions[index]; 
+      const selectedOptionIndices = selectedAnswers[index] || []; 
+      questionContainer.innerHTML = ` 
+        <p class="question"><strong>Question ${index + 1}: ${question.question}</strong></p> 
+        <ul> 
+          ${question.options.map((option, optionIndex) => ` 
+            <li> 
+              <label class="option ${selectedOptionIndices.includes(optionIndex) ? 'selected' : ''}"> 
+                <input type="checkbox" name="question-${index}" value="${optionIndex}" ${selectedOptionIndices.includes(optionIndex) ? 'checked' : ''}> 
+                ${option} 
+              </label> 
+            </li> 
+          `).join('')} 
+        </ul> 
+      `; 
+      prevButton.disabled = index === 0; 
+      nextButton.disabled = index === questions.length - 1; 
+    } 
+    // Function to calculate and display the quiz result 
+    function calculateResult(questions) { 
+      let correctAnswers = 0; 
+      let wrongAnswers = 0; 
+      let notAnswered = 0; 
+      for (let i = 0; i < questions.length; i++) { 
+        const correctAnswer = questions[i].correctAnswer; 
+        const selectedOptions = selectedAnswers[i] || []; 
+        if (selectedOptions.length === 1) { 
+          if (selectedOptions[0] === correctAnswer) { 
+            correctAnswers++; 
+          } else { 
+            wrongAnswers++; 
+          } 
+        } else { 
+          notAnswered++; 
+        } 
+      } 
+      resultContainer.innerHTML = ` 
+        <p>Correct Answers: ${correctAnswers} out of ${questions.length}</p> 
+        <p>Wrong Answers: ${wrongAnswers}</p> 
+        <p>Not Answered: ${notAnswered}</p> 
+      `; 
+    } 
+    // Event listener for checkbox selection 
+    questionContainer.addEventListener('change', (event) => { 
+      const target = event.target; 
+      if (target.type === 'checkbox') { 
+        const index = parseInt(target.name.split('-')[1]); 
+        const selectedOptionIndices = selectedAnswers[index] || []; 
+        const optionIndex = parseInt(target.value); 
+        if (target.checked) { 
+          selectedOptionIndices.push(optionIndex); 
+        } else { 
+          const optionIndexIndex = selectedOptionIndices.indexOf(optionIndex); 
+          if (optionIndexIndex !== -1) { 
+            selectedOptionIndices.splice(optionIndexIndex, 1); 
+          } 
+        } 
+        selectedAnswers[index] = selectedOptionIndices; 
+        updateOptionStyles(index); 
+      } 
+    }); 
+    // Function to update option styles 
+    function updateOptionStyles(index) { 
+      const selectedOptionIndices = selectedAnswers[index] || []; 
+      const options = questionContainer.querySelectorAll(`[name="question-${index}"]`); 
+      options.forEach((option, optionIndex) => { 
+        const label = option.parentElement; 
+        if (selectedOptionIndices.includes(optionIndex)) { 
+          label.classList.add('selected'); 
+        } else { 
+          label.classList.remove('selected'); 
+        } 
+      }); 
+    } 
+    // Previous button click handler 
+    prevButton.addEventListener('click', () => { 
+      if (currentQuestionIndex > 0) { 
+        currentQuestionIndex--; 
+        displayQuestion(currentQuestionIndex, testQuestions); 
+      } 
+    }); 
+    // Next button click handler 
+    nextButton.addEventListener('click', () => { 
+      if (currentQuestionIndex < testQuestions.length - 1) { 
+        currentQuestionIndex++; 
+        displayQuestion(currentQuestionIndex, testQuestions); 
+      } 
+    }); 
+   // Submit button click handler 
+  submitButton.addEventListener('click', () => { 
+    calculateResult(testQuestions); 
+    // Hide quiz elements 
+    questionContainer.style.display = 'block'; 
+    prevButton.style.display = 'none'; 
+    nextButton.style.display = 'none'; 
+    submitButton.style.display = 'none'; 
+    // Show Correct Answer button 
+    const showCorrectAnswerButton = document.createElement('button'); 
+    showCorrectAnswerButton.textContent = 'Show Correct Answers'; 
+    resultContainer.appendChild(showCorrectAnswerButton); 
+    // Display result container 
+    resultContainer.style.display = 'block'; 
+      // Event listener for showing correct answers 
+	showCorrectAnswerButton.addEventListener('click', () => { 
+  	showCorrectAnswers(testQuestions); 
+      // Hide the "Show Correct Answers" button 
+      showCorrectAnswerButton.style.display = 'none'; 
+      // Display message after showing correct answers 
+      const messageElement = document.createElement('p'); 
+      messageElement.textContent = 'Correct answers have been shown Below.'; 
+      resultContainer.appendChild(messageElement); 
+    }); 
+      });  
+  // Function to show correct answers 
+function showCorrectAnswers(questions) { 
+  questionContainer.innerHTML = ''; 
+  questions.forEach((question, index) => { 
+    const correctAnswerIndex = question.correctAnswer; 
+    const correctAnswer = question.options[correctAnswerIndex]; 
+    // Create a container for each question 
+    const questionContainerElement = document.createElement('div'); 
+    questionContainerElement.classList.add('correct-answer-container'); 
+    // Create elements for question and correct answer 
+    const questionElement = document.createElement('p'); 
+    questionElement.innerHTML = `<strong>Question ${index + 1}:</strong> ${question.question}`; 
+    const correctAnswerElement = document.createElement('p'); 
+    correctAnswerElement.innerHTML = `<strong>Correct Answer:</strong> ${correctAnswer}`; 
+    // Apply styles to elements 
+    questionContainerElement.appendChild(questionElement); 
+    questionContainerElement.appendChild(correctAnswerElement); 
+    questionContainer.appendChild(questionContainerElement); 
+  }); 
+}  
