@@ -5,19 +5,19 @@
         "correctAnswer": 2
     },
     {
-        "question": "What is 6 * 4?",
+        "question": "What is 5 * 4?",
         "options": ["16", "20", "24", "28"],
         "correctAnswer": 1
     },
     {
-        "question": "What is 9 * 7?",
+        "question": "What is 8 * 7?",
         "options": ["56", "63", "72", "81"],
         "correctAnswer": 0
     },
     {
         "question": "What is 3 * 6?",
         "options": ["12", "15", "18", "21"],
-        "correctAnswer": 0
+        "correctAnswer": 2
     },
     {
         "question": "What is 15 * 10?",
@@ -27,7 +27,7 @@
     {
         "question": "What is 8 * 2?",
         "options": ["12", "16", "18", "20"],
-        "correctAnswer": 3
+        "correctAnswer": 1
     },
     {
         "question": "What is 7 * 9?",
@@ -35,7 +35,7 @@
         "correctAnswer": 2
     },
     {
-        "question": "What is 4 * 11?",
+        "question": "What is 4 * 12?",
         "options": ["36", "40", "44", "48"],
         "correctAnswer": 3
     },
