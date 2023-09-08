@@ -7,7 +7,7 @@
     {
         "question": "What is 24 / 4?",
         "options": ["4", "6", "8", "10"],
-        "correctAnswer": 1
+        "correctAnswer": 0
     },
     {
         "question": "What is 24 / 6?",
