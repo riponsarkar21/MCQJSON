@@ -1,0 +1,125 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+#left-sidebar {
+  width: 22%;
+  height: 100%;
+  background-color: #f0f0f0;
+  float: left;
+  padding: 1%;
+}
+
+#middle-content {
+  width: 50%;
+  height: 100%;
+  background-color: #ffffff;
+  float: left;
+}
+
+#right-sidebar {
+  width: 22%;
+  height: 100%;
+  background-color: #f0f0f0;
+  float: left;
+  padding: 1%;
+}
+
+#chapter-select {
+  height: 100px;
+  width: 100%;
+  overflow: auto;
+  padding: 10px;
+  font-style: italic;
+}
+
+#quiz-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#question-container {
+  text-align: center;
+  display: none;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li label {
+  display: block;
+  margin-bottom: 10px;
+  background-color: #fff5a2;
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+li input[type="checkbox"] {
+  display: inline-block;
+}
+
+li label.question {
+  font-weight: bold;
+  font-style: normal;
+}
+
+li label.option {
+  font-weight: normal;
+  font-style: initial;
+  color: initial; /* Default text color */
+}
+
+li label.option.selected {
+  color: blue; /* Selected option text color */
+  font-weight: bold;
+  font-style: italic;
+}
+
+#result-container {
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+/* Style for the Facebook icon container */
+.facebook-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+/* Style for the Facebook icon image */
+.facebook-icon img {
+  width: 40px;
+  height: auto;
+}
+
+.correct-answer-container {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.correct-answer-container p {
+  margin: 0;
+  padding: 0px;
+}
+
+.correct-answer-container p:first-child {
+  font-weight: initial;
+}
+
+.correct-answer-container p:last-child {
+  color: green;
+}
